@@ -2,60 +2,78 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Meu bem</title>
   <style>
     body {
       margin: 0;
-      background: #dfc8c8;
+      height: 100vh;
+      background: #fff0f6;
+      overflow: hidden;
+      position: relative;
     }
-    canvas {
-      display: block;
-      margin: auto;
-      background: #dfc8c8;
+    .heart {
+      position: absolute;
+      width: 30px;
+      height: 27px;
+      background-color: #ff4d6d;
+      transform: rotate(-45deg);
+      opacity: 0.8;
+      pointer-events: none;
+      animation-name: fall;
+      animation-timing-function: linear;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 27px;
+      background-color: #ff4d6d;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -15px;
+      left: 0;
+    }
+    .heart::after {
+      left: 15px;
+      top: 0;
+    }
+
+    @keyframes fall {
+      to {
+        transform: translateY(100vh) rotate(45deg);
+        opacity: 0;
+      }
     }
   </style>
 </head>
 <body>
-  <canvas id="canvas" width="500" height="500"></canvas>
-  <script>
-    const canvas = document.getElementById("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.translate(250, 250);
-    let scale = 1;
-    let direction = 1;
-    function bateCoracao(scaleFactor) {
-      ctx.clearRect(-250, -250, 500, 500);
-      ctx.save();
-      ctx.scale(scaleFactor, scaleFactor);
-      ctx.beginPath();
-      for (let t = 0; t < Math.PI * 2; t += 0.01) {
-        const x = 16 * Math.pow(Math.sin(t), 3);
-        const y =
-          13 * Math.cos(t) -
-          5 * Math.cos(2 * t) -
-          2 * Math.cos(3 * t) -
-          Math.cos(4 * t);
-        if (t === 0) {
-          ctx.moveTo(x * 10, -y * 10);
-        } else {
-          ctx.lineTo(x * 10, -y * 10);
-        }
-      }
-      ctx.closePath();
-      ctx.fillStyle = "#ff3366";
-      ctx.fill();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#ff99aa";
-      ctx.stroke();
-      ctx.restore();
-    }
-    function animate() {
-      scale += direction * 0.005;
-      if (scale > 1.05 || scale < 0.95) direction *= -1;
-      bateCoracao(scale);
-      requestAnimationFrame(animate);
-    }
-    animate();
-  </script>
+
+<script>
+  function createHeart() {
+    const heart = document.createElement('div');
+    heart.classList.add('heart');
+
+    // Define posição horizontal aleatória no topo da tela
+    heart.style.left = Math.random() * window.innerWidth + 'px';
+
+    // Duração e delay da animação aleatórios para efeito natural
+    const duration = 4000 + Math.random() * 6000; // 4 a 7 segundos
+    heart.style.animationDuration = duration + 'ms';
+
+    document.body.appendChild(heart);
+
+    // Remove o coração após a animação para não poluir o DOM
+    setTimeout(() => {
+      heart.remove();
+    }, duration);
+  }
+
+  // Cria corações a cada 300 ms
+  setInterval(createHeart, 200);
+</script>
+
 </body>
 </html>
